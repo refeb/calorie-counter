@@ -1,8 +1,13 @@
 import React from 'react'
+import { Greeting } from './Components/Greeting'
 
 class App extends React.Component {
   render () {
-    return <div>hello world</div>
+    return (
+      <div>
+        <Greeting name='Jon Doe' />
+      </div>
+    )
   }
 }
 
