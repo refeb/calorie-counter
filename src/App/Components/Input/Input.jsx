@@ -1,5 +1,34 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
+
+const StyledInput = styled.input`
+  border-radius: 5px;
+  border-color: lightgray;
+  font-size: 1em;
+  padding: 5px;
+  background-color: white;
+  border-style: solid;
+  flex: 3;
+  transition: outline-color 400ms ease;
+  :focus-visible {
+    outline-color: #9e9e9e;
+  }
+`
+const Container = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 0.5em;
+`
+const StyledLabel = styled.label`
+  font-size: 1em;
+  margin-right: 1em;
+  color: #212121;
+  flex: 1;
+`
 
 export const INPUT_TYPES = {
   NUMBER: 'number',
@@ -16,16 +45,16 @@ export function Input ({ title, id, value, name, type, handleOnChange }) {
   }
 
   return (
-    <div>
-      <label htmlFor={id}>{title}</label>
-      <input
+    <Container>
+      <StyledLabel htmlFor={id}>{title}</StyledLabel>
+      <StyledInput
         id={id}
         value={value}
         name={name}
         type={type}
         onChange={onTextChange}
       />
-    </div>
+    </Container>
   )
 }
 Input.propTypes = {

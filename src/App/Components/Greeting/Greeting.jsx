@@ -1,13 +1,22 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
 
-// export class Greeting extends React.Component {
-//   render () {
-//     return <div>Welcome {this.props.name}</div>
-//   }
-// }
+const Container = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  font-size: 2em;
+  color: gray;
+  font-weight: 500;
+  background-color: #f5f5f5;
+  padding: 1em 0;
+  text-align: center;
+`
+
 export function Greeting ({ name }) {
-  return <div>Welcome {name}</div>
+  return <Container>Welcome {name}</Container>
 }
 Greeting.propTypes = {
   name: PropTypes.string

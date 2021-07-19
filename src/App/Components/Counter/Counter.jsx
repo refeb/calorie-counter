@@ -1,4 +1,25 @@
 import React from 'react'
+import styled from 'styled-components'
+
+import { Button } from '../Button'
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  background-color: #fafafa;
+  padding: 1em;
+`
+const StyledP = styled.p`
+  font-size: 2em;
+  text-align: center;
+  color: #424242;
+  margin-bottom: 0.5em;
+`
+const ButtonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`
 
 export class Counter extends React.Component {
   constructor (props) {
@@ -26,11 +47,13 @@ export class Counter extends React.Component {
 
   render () {
     return (
-      <div>
-        <p>Count {this.state.number}</p>
-        <button onClick={this.handleIncrease}>Increase</button>
-        <button onClick={this.handleReset}>Reset</button>
-      </div>
+      <Container>
+        <StyledP>Count {this.state.number}</StyledP>
+        <ButtonContainer>
+          <Button onClick={this.handleIncrease}>Increase</Button>
+          <Button onClick={this.handleReset}>Reset</Button>
+        </ButtonContainer>
+      </Container>
     )
   }
 }
