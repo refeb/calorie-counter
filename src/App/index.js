@@ -1,10 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { Greeting } from './Components/Greeting'
-import { Counter } from './Components/Counter'
 import { Input, INPUT_TYPES } from './Components/Input'
 import { Button } from './Components/Button'
+import { FoodCard } from './Components/FoodCard'
 
 const MainContainer = styled.div`
   background-color: #ffffff;
@@ -32,23 +31,60 @@ const InputContainer = styled.div`
   padding: 1em;
   box-sizing: border-box;
 `
-
+const LOCAL_STORAGE_FOODS_KEY = 'foods'
 class App extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      firstName: '',
-      lastName: '',
-      age: 0
+      foodName: '',
+      calories: 0,
+      foods: []
+    }
+  }
+
+  componentDidMount () {
+    this.setState(() => {
+      return {
+        foods: JSON.parse(localStorage.getItem(LOCAL_STORAGE_FOODS_KEY)) || []
+      }
+    })
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    if (prevState.foods.length !== this.state.foods.length) {
+      localStorage.setItem(
+        LOCAL_STORAGE_FOODS_KEY,
+        JSON.stringify(this.state.foods)
+      )
     }
   }
 
   handleOnButtonClick = () => {
-    alert(`
-    First name is ${this.state.firstName || 'N/A'}
-    Last name is ${this.state.lastName || 'N/A'}
-    Age is ${this.state.age || 'N/A'}
-    `)
+    const { foodName, foods } = this.state
+    if (!foodName) {
+      alert('Please enter a food!')
+      return
+    }
+    if (
+      foods.find((food) => food.name.toLowerCase() === foodName.toLowerCase())
+    ) {
+      alert(`You've added ${foodName}!`)
+      return
+    }
+    this.setState((prevState) => {
+      return {
+        foods: [
+          ...prevState.foods,
+          {
+            id: new Date().getTime(),
+            name: prevState.foodName,
+            calories: Number(prevState.calories)
+          }
+        ],
+        foodName: '',
+        calories: 0
+      }
+    })
   }
 
   onTextChange = (value, name) => {
@@ -59,39 +95,51 @@ class App extends React.Component {
     })
   }
 
+  handleOnRemoveFood = (id) => {
+    this.setState((prevState) => {
+      return {
+        foods: prevState.foods.filter((food) => food.id !== id)
+      }
+    })
+  }
+
   render () {
     return (
       <MainContainer>
         <Container>
-          <Greeting name='Jon Doe' />
-          <Counter initialValue={3} />
           <InputContainer>
             <Input
-              title='First Name'
-              id='firstNameId'
-              name='firstName'
-              value={this.state.firstName}
+              title='Food'
+              id='foodNameId'
+              name='foodName'
+              value={this.state.foodName}
               handleOnChange={this.onTextChange}
               type={INPUT_TYPES.TEXT}
             />
             <Input
-              title='Last Name'
-              id='lastNameId'
-              name='lastName'
-              value={this.state.lastName}
-              handleOnChange={this.onTextChange}
-              type={INPUT_TYPES.TEXT}
-            />
-            <Input
-              title='Age'
-              id='ageId'
-              name='age'
-              value={this.state.age}
+              title='Calories in 100 grams'
+              id='caloriesId'
+              name='calories'
+              value={this.state.calories}
               handleOnChange={this.onTextChange}
               type={INPUT_TYPES.NUMBER}
             />
-            <Button onClick={this.handleOnButtonClick}>Click Me!</Button>
+            <Button onClick={this.handleOnButtonClick}>Add</Button>
           </InputContainer>
+          <ul>
+            {this.state.foods.map((food) => {
+              return (
+                <li key={food.id}>
+                  <FoodCard
+                    id={food.id}
+                    name={food.name}
+                    calories={food.calories}
+                    onRemove={this.handleOnRemoveFood}
+                  />
+                </li>
+              )
+            })}
+          </ul>
         </Container>
       </MainContainer>
     )
