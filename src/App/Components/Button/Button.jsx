@@ -13,3 +13,11 @@ export const Button = styled.button`
     background-color: #eeeeee;
   }
 `
+export const SecondaryButton = styled(Button)`
+  background-color: #e53935;
+  color: #f5f5f5;
+  :active {
+    background-color: #f5f5f5;
+    color: #e53935;
+  }
+`

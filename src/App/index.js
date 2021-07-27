@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { Input, INPUT_TYPES } from './Components/Input'
-import { Button } from './Components/Button'
+import { Button, SecondaryButton } from './Components/Button'
 import { FoodCard } from './Components/FoodCard'
 
 const MainContainer = styled.div`
@@ -95,7 +95,7 @@ class App extends React.Component {
     })
   }
 
-  handleOnRemoveFood = (id) => {
+  handleOnRemoveFood = (id) => () => {
     this.setState((prevState) => {
       return {
         foods: prevState.foods.filter((food) => food.id !== id)
@@ -131,10 +131,15 @@ class App extends React.Component {
               return (
                 <li key={food.id}>
                   <FoodCard
-                    id={food.id}
                     name={food.name}
                     calories={food.calories}
-                    onRemove={this.handleOnRemoveFood}
+                    actions={
+                      <SecondaryButton
+                        onClick={this.handleOnRemoveFood(food.id)}
+                      >
+                        Remove
+                      </SecondaryButton>
+                    }
                   />
                 </li>
               )
