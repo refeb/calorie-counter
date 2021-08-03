@@ -4,6 +4,8 @@ import styled from 'styled-components'
 import { Input, INPUT_TYPES } from '../../Components/Input'
 import { Button, SecondaryButton } from '../../Components/Button'
 import { FoodCard } from '../../Components/FoodCard'
+import { Modal } from '../../Components/Modal'
+import { FoodSearch } from '../../Components/FoodSearch'
 
 const Container = styled.div``
 const InputContainer = styled.div`
@@ -17,6 +19,7 @@ const InputContainer = styled.div`
   padding: 1em;
   box-sizing: border-box;
 `
+const ButtonContainer = styled.div``
 const LOCAL_STORAGE_FOODS_KEY = 'foods'
 class AddFood extends React.Component {
   constructor (props) {
@@ -24,7 +27,8 @@ class AddFood extends React.Component {
     this.state = {
       foodName: '',
       calories: 0,
-      foods: []
+      foods: [],
+      isModalOpen: false
     }
   }
 
@@ -89,9 +93,40 @@ class AddFood extends React.Component {
     })
   }
 
+  handleOnOpenModal = () => {
+    this.setState(() => {
+      return {
+        isModalOpen: true
+      }
+    })
+  }
+
+  handleOnCloseModal = () => {
+    this.setState(() => {
+      return {
+        isModalOpen: false
+      }
+    })
+  }
+
+  handleOnChooseFood = (food) => {
+    this.setState((prevState) => {
+      return {
+        foods: [...prevState.foods, food],
+        isModalOpen: false
+      }
+    })
+  }
+
   render () {
     return (
       <Container>
+        <Modal
+          isOpen={this.state.isModalOpen}
+          onClose={this.handleOnCloseModal}
+        >
+          <FoodSearch onChooseFood={this.handleOnChooseFood} />
+        </Modal>
         <InputContainer>
           <Input
             title='Food'
@@ -109,7 +144,10 @@ class AddFood extends React.Component {
             handleOnChange={this.onTextChange}
             type={INPUT_TYPES.NUMBER}
           />
-          <Button onClick={this.handleOnButtonClick}>Add</Button>
+          <ButtonContainer>
+            <Button onClick={this.handleOnOpenModal}>Search</Button>
+            <Button onClick={this.handleOnButtonClick}>Add</Button>
+          </ButtonContainer>
         </InputContainer>
         <ul>
           {this.state.foods.map((food) => {
