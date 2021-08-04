@@ -21,39 +21,24 @@ const ButtonContainer = styled.div`
   justify-content: space-between;
 `
 
-export class Counter extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      number: props.initialValue
-    }
+export function Counter ({ initialValue }) {
+  const [number, setNumber] = React.useState(initialValue)
+
+  const handleIncrease = () => {
+    setNumber(number + 1)
   }
 
-  handleIncrease = () => {
-    this.setState((prevState) => {
-      return {
-        number: prevState.number + 1
-      }
-    })
+  const handleReset = () => {
+    setNumber(0)
   }
 
-  handleReset = () => {
-    this.setState(() => {
-      return {
-        number: 0
-      }
-    })
-  }
-
-  render () {
-    return (
-      <Container>
-        <StyledP>Count {this.state.number}</StyledP>
-        <ButtonContainer>
-          <Button onClick={this.handleIncrease}>Increase</Button>
-          <Button onClick={this.handleReset}>Reset</Button>
-        </ButtonContainer>
-      </Container>
-    )
-  }
+  return (
+    <Container>
+      <StyledP>Count {number}</StyledP>
+      <ButtonContainer>
+        <Button onClick={handleIncrease}>Increase</Button>
+        <Button onClick={handleReset}>Reset</Button>
+      </ButtonContainer>
+    </Container>
+  )
 }

@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
-const StyledInput = styled.input`
+const inputStyles = css`
   border-radius: 5px;
   border-color: lightgray;
   font-size: 1em;
@@ -14,6 +14,13 @@ const StyledInput = styled.input`
   :focus-visible {
     outline-color: #9e9e9e;
   }
+`
+
+const StyledInput = styled.input`
+  ${inputStyles}
+`
+const StyledSelect = styled.select`
+  ${inputStyles}
 `
 const Container = styled.div`
   display: flex;
@@ -69,4 +76,32 @@ Input.propTypes = {
 }
 Input.defaultProps = {
   type: INPUT_TYPES.TEXT
+}
+export function Select ({
+  title,
+  id,
+  value,
+  name,
+  options = [],
+  handleOnChange
+}) {
+  const onTextChange = (event) => {
+    const { value, name } = event.target
+    if (typeof handleOnChange === 'function') {
+      handleOnChange(value, name)
+    }
+  }
+
+  return (
+    <Container>
+      <StyledLabel htmlFor={id}>{title}</StyledLabel>
+      <StyledSelect id={id} value={value} name={name} onChange={onTextChange}>
+        {options.map((opt) => (
+          <option key={opt.id} value={opt.value}>
+            {opt.name}
+          </option>
+        ))}
+      </StyledSelect>
+    </Container>
+  )
 }

@@ -27,17 +27,18 @@ class App extends React.Component {
         <Container>
           <BrowserRouter>
             <Menu>
-              <MenuItem exact to='/'>Home</MenuItem>
-              <MenuItem to='/about'>About</MenuItem>
-              <MenuItem exact to='/food'>Food</MenuItem>
-              <MenuItem to='/food/apple'>Apple</MenuItem>
+              <MenuItem exact to='/'>
+                Home
+              </MenuItem>
+              <MenuItem to='/log'>Log</MenuItem>
+              <MenuItem to='/food'>Food</MenuItem>
             </Menu>
             <Switch>
               <Route exact path='/' component={HomePage} />
               <Route
-                path='/about'
+                path='/log'
                 render={() => {
-                  return <div>About</div>
+                  return <div>Log</div>
                 }}
               />
               <Route
