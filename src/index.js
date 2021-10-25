@@ -3,10 +3,33 @@ import ReactDOM from 'react-dom'
 import './index.css'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
+import { createStore } from 'redux'
+import { Provider } from 'react-redux'
+import reducers from './App/redux/reducers'
+const LOCAL_STORAGE_FOODS_KEY = 'foods'
+const BMR_KEY = 'BMR'
 
+const preloadStates = () => {
+  const foods = JSON.parse(localStorage.getItem(LOCAL_STORAGE_FOODS_KEY)) || []
+  const BMR = JSON.parse(localStorage.getItem(BMR_KEY)) || undefined
+
+  return {
+    foods,
+    BMR
+  }
+}
+const store = createStore(reducers, preloadStates())
+store.subscribe(() => {
+  const state = store.getState()
+  const { foods, BMR } = state
+  localStorage.setItem(LOCAL_STORAGE_FOODS_KEY, JSON.stringify(foods))
+  localStorage.setItem(BMR_KEY, JSON.stringify(BMR))
+})
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 )

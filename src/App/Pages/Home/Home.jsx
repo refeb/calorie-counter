@@ -1,9 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
+import { connect } from 'react-redux'
 
 import { Card } from '../../Components/Card'
 import { Button } from '../../Components/Button'
 import { Input, INPUT_TYPES, Select } from '../../Components/Input'
+
+import { setBMR } from '../../redux/actions/bmr'
 
 const Container = styled(Card)`
   flex-direction: column;
@@ -77,9 +80,8 @@ function calculateBMR ({ weight, height, age, gender }) {
 }
 const ONE_KG_IN_POUND = 2.20462
 const CALORIES_TO_LOSE_ONE_POUND = 3500 / 7
-const BMR_KEY = 'BMR'
 const INPUTS_KEY = 'personalInfo'
-export default function Home () {
+function Home ({ BMR, setBMR }) {
   const [inputs, setInputs] = React.useState({
     age: 0,
     weight: 0,
@@ -88,12 +90,8 @@ export default function Home () {
     activity: ACTIVITIES[0].value,
     changeWeight: 0
   })
-  const [BMR, setBMR] = React.useState({
-    BMR: 0,
-    dailyCaloriesBudget: 0
-  })
+
   React.useEffect(() => {
-    const BMR = JSON.parse(localStorage.getItem(BMR_KEY))
     const inputs = JSON.parse(localStorage.getItem(INPUTS_KEY))
     if (BMR) {
       setInputs(inputs)
@@ -101,11 +99,10 @@ export default function Home () {
     }
   }, []) // component did mount
   React.useEffect(() => {
-    if (BMR.BMR) {
-      localStorage.setItem(BMR_KEY, JSON.stringify(BMR))
+    if (BMR) {
       localStorage.setItem(INPUTS_KEY, JSON.stringify(inputs))
     }
-  }, [BMR.BMR])
+  }, [BMR])
   const handleOnInputChange = (text, name) => {
     setInputs(
       Object.assign({}, inputs, {
@@ -187,3 +184,10 @@ export default function Home () {
     </Container>
   )
 }
+const mapStateToProps = (state) => {
+  const { BMR } = state
+  return {
+    BMR
+  }
+}
+export default connect(mapStateToProps, { setBMR })(Home)

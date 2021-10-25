@@ -1,11 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
+import { connect } from 'react-redux'
 
 import { Input, INPUT_TYPES } from '../../Components/Input'
 import { Button, SecondaryButton } from '../../Components/Button'
 import { FoodCard } from '../../Components/FoodCard'
 import { Modal } from '../../Components/Modal'
 import { FoodSearch } from '../../Components/FoodSearch'
+
+import { addNewFood, removeFood, setFoods } from '../../redux/actions/foods'
 
 const Container = styled.div``
 const InputContainer = styled.div`
@@ -20,37 +23,35 @@ const InputContainer = styled.div`
   box-sizing: border-box;
 `
 const ButtonContainer = styled.div``
-const LOCAL_STORAGE_FOODS_KEY = 'foods'
+// const LOCAL_STORAGE_FOODS_KEY = 'foods'
 class AddFood extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       foodName: '',
       calories: 0,
-      foods: [],
       isModalOpen: false
     }
   }
 
-  componentDidMount () {
-    this.setState(() => {
-      return {
-        foods: JSON.parse(localStorage.getItem(LOCAL_STORAGE_FOODS_KEY)) || []
-      }
-    })
-  }
+  // componentDidMount () {
+  //   this.props.setFoods(
+  //     JSON.parse(localStorage.getItem(LOCAL_STORAGE_FOODS_KEY)) || []
+  //   )
+  // }
 
-  componentDidUpdate (prevProps, prevState) {
-    if (prevState.foods.length !== this.state.foods.length) {
-      localStorage.setItem(
-        LOCAL_STORAGE_FOODS_KEY,
-        JSON.stringify(this.state.foods)
-      )
-    }
-  }
+  // componentDidUpdate (prevProps, prevState) {
+  //   if (prevProps.foods.length !== this.props.foods.length) {
+  //     localStorage.setItem(
+  //       LOCAL_STORAGE_FOODS_KEY,
+  //       JSON.stringify(this.props.foods)
+  //     )
+  //   }
+  // }
 
   handleOnButtonClick = () => {
-    const { foodName, foods } = this.state
+    const { foodName, calories } = this.state
+    const { foods } = this.props
     if (!foodName) {
       alert('Please enter a food!')
       return
@@ -61,16 +62,13 @@ class AddFood extends React.Component {
       alert(`You've added ${foodName}!`)
       return
     }
+    this.props.addNewFood({
+      id: new Date().getTime(),
+      name: foodName,
+      calories: Number(calories)
+    })
     this.setState((prevState) => {
       return {
-        foods: [
-          ...prevState.foods,
-          {
-            id: new Date().getTime(),
-            name: prevState.foodName,
-            calories: Number(prevState.calories)
-          }
-        ],
         foodName: '',
         calories: 0
       }
@@ -86,11 +84,7 @@ class AddFood extends React.Component {
   }
 
   handleOnRemoveFood = (id) => () => {
-    this.setState((prevState) => {
-      return {
-        foods: prevState.foods.filter((food) => food.id !== id)
-      }
-    })
+    this.props.removeFood(id)
   }
 
   handleOnOpenModal = () => {
@@ -110,12 +104,8 @@ class AddFood extends React.Component {
   }
 
   handleOnChooseFood = (food) => {
-    this.setState((prevState) => {
-      return {
-        foods: [...prevState.foods, food],
-        isModalOpen: false
-      }
-    })
+    this.props.addNewFood(food)
+    this.handleOnCloseModal()
   }
 
   render () {
@@ -150,7 +140,7 @@ class AddFood extends React.Component {
           </ButtonContainer>
         </InputContainer>
         <ul>
-          {this.state.foods.map((food) => {
+          {this.props.foods.map((food) => {
             return (
               <li key={food.id}>
                 <FoodCard
@@ -170,5 +160,13 @@ class AddFood extends React.Component {
     )
   }
 }
+const mapStateToProps = (state) => {
+  const { foods } = state
+  return {
+    foods
+  }
+}
 
-export default AddFood
+export default connect(mapStateToProps, { addNewFood, removeFood, setFoods })(
+  AddFood
+)
