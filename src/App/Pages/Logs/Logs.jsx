@@ -61,6 +61,9 @@ function Logs ({ foods, logs, removeLog, dailyCaloriesBudget }) {
   const onRemoveClick = (id) => () => {
     removeLog(id)
   }
+  const onEditClick = (id) => () => {
+    history.push(`/log/edit/${id}`)
+  }
   const usedCalories = logs.reduce((prevValue, currentValue) => {
     return prevValue + currentValue.usedCalories
   }, 0)
@@ -101,7 +104,7 @@ function Logs ({ foods, logs, removeLog, dailyCaloriesBudget }) {
                 calories={log.usedCalories}
                 actions={
                   <>
-                    <Button>Edit</Button>
+                    <Button onClick={onEditClick(log.id)}>Edit</Button>
                     <SecondaryButton onClick={onRemoveClick(log.id)}>
                       Remove
                     </SecondaryButton>

@@ -13,3 +13,11 @@ export function removeLog (id) {
     id
   }
 }
+
+export function editLog (id, usedCalories) {
+  return {
+    type: ACTIONS.EDIT,
+    id,
+    usedCalories
+  }
+}

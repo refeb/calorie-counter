@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 
-import { addLog } from '../../redux/actions/logs'
+import { editLog } from '../../redux/actions/logs'
 
 import { INPUT_TYPES, Input } from '../../Components/Input'
 import { Card } from '../../Components/Card'
@@ -16,19 +16,16 @@ const Row = styled.div`
 `
 const Text = styled.p``
 
-function AddLog ({ name, calories, addLog }) {
-  const [usedGrams, setUsedGrams] = React.useState(100)
+function EditLog ({ id, name, calories, usedCalories, editLog }) {
+  const [usedGrams, setUsedGrams] = React.useState(
+    (usedCalories / calories) * 100
+  )
   function handleOnTextChange (value) {
     setUsedGrams(value)
   }
-  const usedCalories = (calories * usedGrams) / 100
-  function onAddClick () {
-    addLog({
-      name,
-      calories,
-      usedCalories,
-      id: new Date().getTime()
-    })
+  const currentUsedCalories = (calories * usedGrams) / 100
+  function onEditClick () {
+    editLog(id, currentUsedCalories)
     back()
   }
   function back () {
@@ -38,7 +35,7 @@ function AddLog ({ name, calories, addLog }) {
     return (
       <Card>
         <Row>
-          <Text>Invalid food!</Text>
+          <Text>Invalid log!</Text>
         </Row>
         <Button onClick={back}>Back</Button>
       </Card>
@@ -62,10 +59,10 @@ function AddLog ({ name, calories, addLog }) {
         value={usedGrams}
         handleOnChange={handleOnTextChange}
       />
-      <Button onClick={onAddClick}>Add</Button>
+      <Button onClick={onEditClick}>Edit</Button>
       <Row>
         <Text>Used Calories</Text>
-        <Text>{usedCalories}</Text>
+        <Text>{currentUsedCalories}</Text>
       </Row>
       <Button onClick={back}>Back</Button>
     </Card>
@@ -73,10 +70,15 @@ function AddLog ({ name, calories, addLog }) {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const foodId = ownProps.match.params.id
-  const { foods } = state
-  const food = foods.find((food) => String(food.id) === foodId)
-  const { name, calories } = food || {}
-  return { name, calories }
+  const logId = ownProps.match.params.id
+  const { logs } = state
+  const log = logs.find((log) => String(log.id) === logId)
+  const { id, name, calories, usedCalories } = log || {}
+  return {
+    id,
+    name,
+    calories,
+    usedCalories
+  }
 }
-export default connect(mapStateToProps, { addLog })(AddLog)
+export default connect(mapStateToProps, { editLog })(EditLog)

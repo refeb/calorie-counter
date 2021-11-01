@@ -8,22 +8,26 @@ import { Provider } from 'react-redux'
 import reducers from './App/redux/reducers'
 const LOCAL_STORAGE_FOODS_KEY = 'foods'
 const BMR_KEY = 'BMR'
+const LOGS_KEY = 'logs'
 
 const preloadStates = () => {
   const foods = JSON.parse(localStorage.getItem(LOCAL_STORAGE_FOODS_KEY)) || []
   const BMR = JSON.parse(localStorage.getItem(BMR_KEY)) || undefined
+  const logs = JSON.parse(localStorage.getItem(LOGS_KEY)) || undefined
 
   return {
     foods,
-    BMR
+    BMR,
+    logs
   }
 }
 const store = createStore(reducers, preloadStates())
 store.subscribe(() => {
   const state = store.getState()
-  const { foods, BMR } = state
+  const { foods, BMR, logs } = state
   localStorage.setItem(LOCAL_STORAGE_FOODS_KEY, JSON.stringify(foods))
   localStorage.setItem(BMR_KEY, JSON.stringify(BMR))
+  localStorage.setItem(LOGS_KEY, JSON.stringify(logs))
 })
 ReactDOM.render(
   <React.StrictMode>
